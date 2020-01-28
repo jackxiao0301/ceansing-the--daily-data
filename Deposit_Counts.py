@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np 
 import datetime
+import time
+import progressbar 
+
 
 
 def open_csv(csv_date):
@@ -19,9 +22,14 @@ def cleansing_table(df, day):
 if __name__ == '__main__':
     begin = input('Input the begin date(Format:YYYY_MM_DD)')
     end = input('Input the end date(Format:YYYY_MM_DD):')
+    barbn = int(begin.split('_')[2])
+    baren = int(end.split('_')[2])
     begin = datetime.date(int(begin.split('_')[0]),int(begin.split('_')[1]),int(begin.split('_')[2]))
     end = datetime.date(int(end.split('_')[0]),int(end.split('_')[1]),int(end.split('_')[2]))
     df = pd.DataFrame(columns = ['Date', 'User Name', 'Source', 'Source Name', 'Vip Level', 'Risk Level', 'Linked Users', 'Total Deposit Amount', 'Total Deposit Count'])
+    maxv = (baren - barbn + 1)
+    bar = progressbar.ProgressBar(max_value=maxv)
+    count = 0
     #列出日期范围
     for i in range((end - begin).days+1):
         day = begin + datetime.timedelta(days=i)
@@ -30,9 +38,13 @@ if __name__ == '__main__':
         open_df = open_csv(csv_date)
         new_df = cleansing_table(open_df, day)
         df = df.append(new_df) 
-        print('Cleasing the csv_file date:'+ csv_date)
+        count += 1 
+        time.sleep(0.1)
+        bar.update(count)
+        #print('Cleasing the csv_file date:'+ csv_date)
     try:
         df.to_csv(r'C:\Users\Jesse\Downloads\Cleasing_data_Deposit Counts_' + csv_date +'.csv', encoding='utf-8-sig', index=False)
         print('Export the file')
     except:
-        print('File export failed')
+        print('File export failed at:' + csv_date)
+    

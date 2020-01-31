@@ -50,6 +50,8 @@ def cleasing_table(BG_df):
             new_FDDate.append(newdate)
     FdSer = pd.Series(new_FDDate)
     BG_df['First Deposit Date'] = FdSer
+    move = BG_df.pop('Regisration Date')
+    BG_df.insert(0, 'Regisration Date', move)
     return BG_df
 
 
@@ -63,7 +65,7 @@ def get_worksheet_raw_number(auth_json_path, gss_scopes, BG_spreadsheet_key, wor
     BG_ws = BG_sh.worksheet(worksheet_title)
     BG_data = BG_ws.get_all_values()
     BG_df = pd.DataFrame(data=BG_data)
-    BG_df.columns = ['用户名', '来源', '渠道', '注册日期', '关连帐号数', '上次登入时间', '验证状态', '风险等级',
+    BG_df.columns = ['注册日期', '用户名', '来源', '渠道',  '关连帐号数', '上次登入时间', '验证状态', '风险等级',
                      '首存时间', '总投注金额', '公司输赢', '总领取红利', '总存款', '总提款', '总调帐', '推广组维护人']
     BG_df = BG_df.drop(BG_df.index[:1])
     BG_df['注册日期'] = pd.to_datetime(BG_df['注册日期'])
